@@ -1,7 +1,7 @@
 class Config:
     def __init__(self):
         # Data configuration
-        self.DATA_ROOT = '/Users/chenyufeng/desktop/kitti_tiny_3D'
+        self.DATA_ROOT = '/content/3d_detection/3d_detection/kitti_tiny_3D'
         self.IMAGE_SIZE = (224, 224)
         
         # Model configuration

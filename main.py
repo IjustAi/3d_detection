@@ -2,42 +2,44 @@ import argparse
 import torch
 import os
 import sys
+import importlib
 
-# Add all subdirectories to Python path
+# ---------------------- 设置路径 ----------------------
 current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, current_dir)
-sys.path.insert(0, os.path.join(current_dir, 'config'))
-sys.path.insert(0, os.path.join(current_dir, 'model'))
-sys.path.insert(0, os.path.join(current_dir, 'training'))
-sys.path.insert(0, os.path.join(current_dir, 'inference'))
-sys.path.insert(0, os.path.join(current_dir, 'utils'))
+sys.path.insert(0, current_dir)  # 只加根目录，不加子目录
 
+print("Python sys.path 前几项:", sys.path[:6])
+print("当前目录:", current_dir)
+
+# ---------------------- 导入模块 ----------------------
 try:
-    # Import config
+    # 配置
     from config.default import get_cfg
+    cfg = get_cfg()
+    print("✓ Config 导入成功")
     
-    # Import model - now we know the exact file name
-    from model.vit_3d_detector import ViT3DDetector
+    # 模型
+    import model.vit_3d_detector as vit_module
+    importlib.reload(vit_module)  # 重新加载避免缓存问题
+    ViT3DDetector = vit_module.ViT3DDetector
+    print("✓ ViT3DDetector 导入成功")
     
-    # Import trainer
-    try:
-        from training.trainer import Trainer
-    except ImportError:
-        from trainer import Trainer
+    # Trainer
+    from training.trainer import Trainer
+    print("✓ Trainer 导入成功")
     
-    # Import inference
-    try:
-        from inference.inference import InferenceEngine
-    except ImportError:
-        from inference import InferenceEngine
-        
+    # InferenceEngine
+    from inference.inference import InferenceEngine
+    print("✓ InferenceEngine 导入成功")
+    
 except ImportError as e:
-    print(f"Import error: {e}")
-    print("Current directory:", current_dir)
-    print("Files in directory:", os.listdir(current_dir))
-    print("Config files:", os.listdir(os.path.join(current_dir, 'config')))
-    print("Model files:", os.listdir(os.path.join(current_dir, 'model')))
+    print("❌ Import error:", e)
+    # 打印文件信息方便排查
+    print("当前目录文件:", os.listdir(current_dir))
+    for folder in ['config', 'model', 'training', 'inference', 'utils']:
+        print(f"{folder} 文件:", os.listdir(os.path.join(current_dir, folder)))
     sys.exit(1)
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='3D Object Detection with ViT')

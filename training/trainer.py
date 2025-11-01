@@ -6,8 +6,8 @@ from tqdm import tqdm
 import os
 
 from model import ViT3DDetector
-from loss import MultiTask3DLoss
-from dataset import KITTIDataset, collate_fn
+from model.loss import MultiTask3DLoss
+from data.dataset import KITTIDataset, collate_fn
 
 class Trainer:
     def __init__(self, cfg):

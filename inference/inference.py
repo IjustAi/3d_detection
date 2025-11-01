@@ -4,7 +4,7 @@ from PIL import Image
 from torchvision import transforms
 
 from model import ViT3DDetector
-from visualization import VisualizationUtils
+
 
 class InferenceEngine:
     def __init__(self, cfg, model_path):
@@ -14,8 +14,6 @@ class InferenceEngine:
         self.model = ViT3DDetector().to(self.device)
         self.load_model(model_path)
         self.model.eval()
-        
-        self.visualizer = VisualizationUtils()
         
         self.transform = transforms.Compose([
             transforms.Resize(cfg.IMAGE_SIZE),
