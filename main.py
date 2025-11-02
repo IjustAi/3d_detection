@@ -3,6 +3,8 @@ import torch
 import os
 import sys
 import importlib
+import numpy as np
+from PIL import Image
 
 # ---------------------- 设置路径 ----------------------
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -150,6 +152,14 @@ def main():
         result_image = inference_engine.run_inference(
             args.image_path, box2d, intrinsic
         )
+        if isinstance(result_image, tuple):
+    # 假设第一个元素是图像
+          result_image = result_image[0]
+
+      # 如果返回的是 numpy array，则转为 PIL Image
+        if isinstance(result_image, np.ndarray):
+          result_image = Image.fromarray(result_image)
+
         
         # Save result
         os.makedirs(args.output_dir, exist_ok=True)
